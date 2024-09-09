@@ -1,0 +1,10 @@
+GET http://localhost:8000/api/publishers
+User-Agent: IntelliJ HTTP Client/PyCharm 2024.2
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+content-length: 0
+
+<> 2024-08-20T234906.403.json
+
+###
+

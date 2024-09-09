@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="99c95114-663f-4405-b8ef-d043928887bc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/models/invoices.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/models/invoices.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/finance/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/finance/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/users/views.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2hzQEq0I2uqsDcwWKfHVz3RMsIa" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "/Volumes/BatDrive/batdesk/codenine/school-management-system/school-management-system-server",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="school-management-system-server" type="Python.DjangoServer" factoryName="Django server">
+      <module name="school-management-system-server" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="localhost" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-PY-242.20224.347" />
+        <option value="bundled-python-sdk-c2d6afa66fbe-39cff9de6eef-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.20224.347" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="99c95114-663f-4405-b8ef-d043928887bc" name="Changes" comment="" />
+      <created>1718594317647</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1718594317647</updated>
+      <workItem from="1718594319160" duration="2440000" />
+      <workItem from="1718963159660" duration="693000" />
+      <workItem from="1718979508296" duration="5000" />
+      <workItem from="1719084366529" duration="2235000" />
+      <workItem from="1719086611096" duration="3841000" />
+      <workItem from="1719151695912" duration="1093000" />
+      <workItem from="1719157370136" duration="14439000" />
+      <workItem from="1719341716754" duration="11000" />
+      <workItem from="1719471512887" duration="2706000" />
+      <workItem from="1719690476289" duration="2755000" />
+      <workItem from="1719711019607" duration="5674000" />
+      <workItem from="1719761864844" duration="3546000" />
+      <workItem from="1719775353744" duration="1732000" />
+      <workItem from="1719777090013" duration="311000" />
+      <workItem from="1719777408944" duration="1965000" />
+      <workItem from="1719780459718" duration="937000" />
+      <workItem from="1719787309558" duration="516000" />
+      <workItem from="1719821121080" duration="1053000" />
+      <workItem from="1719822389513" duration="305000" />
+      <workItem from="1719848862422" duration="3068000" />
+      <workItem from="1719859686276" duration="5000" />
+      <workItem from="1719872162992" duration="5639000" />
+      <workItem from="1720055452184" duration="3299000" />
+      <workItem from="1720231176595" duration="1498000" />
+      <workItem from="1720314935231" duration="3823000" />
+      <workItem from="1721104823042" duration="2118000" />
+      <workItem from="1722457795609" duration="803000" />
+      <workItem from="1722461533525" duration="3000" />
+      <workItem from="1722536592608" duration="1856000" />
+      <workItem from="1722573323295" duration="3000" />
+      <workItem from="1722697525626" duration="2851000" />
+      <workItem from="1722772485942" duration="12000" />
+      <workItem from="1723098607898" duration="16000" />
+      <workItem from="1723098754968" duration="718000" />
+      <workItem from="1723195756227" duration="6966000" />
+      <workItem from="1723221959384" duration="5704000" />
+      <workItem from="1724175133825" duration="622000" />
+      <workItem from="1724175993450" duration="849000" />
+      <workItem from="1724217419702" duration="1448000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/reports/urls.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
