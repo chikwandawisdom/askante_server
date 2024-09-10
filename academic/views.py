@@ -630,6 +630,18 @@ def get_attendance_list_for_student(request):
     attendance = AttendanceReadSerializer(attendance, many=True).data
     return success_w_data(data=attendance, msg="Attendance fetched successfully")
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsStudent])
+def get_student_attendance_all_classes(request):
+    student = Student.objects.get(user=request.user)
+    active_academic_year = get_active_academic_year(student.institution)
+
+    attendance = Attendance.objects.select_related(
+        "student", "attendance_group"
+    ).filter(Q(student=student))
+    attendance = AttendanceReadSerializer(attendance, many=True).data
+    return success_w_data(data=attendance, msg="Attendance fetched successfully")
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsStudent])

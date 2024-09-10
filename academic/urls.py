@@ -5,7 +5,7 @@ from .views import get_teachers_class_list, get_teachers_periods, submit_attenda
     get_teachers_monthly_calendar, get_marking_options_for_a_class, MarkList, MarkDetail, get_students_monthly_calendar, \
     get_attendance_list_for_student, get_assignments_for_student, get_exams_for_students, \
     get_class_subject_list_for_students, get_periods_for_students, submit_term_result, get_term_result, get_settings, \
-    update_settings, get_student_marks, get_student_term_results
+    update_settings, get_student_marks, get_student_term_results, get_student_attendance_all_classes
 
 urlpatterns = [
     path('teachers/class-list', get_teachers_class_list, name='get_teachers_class_list'),
@@ -34,6 +34,7 @@ urlpatterns = [
 
     path('students/monthly-calendar', get_students_monthly_calendar, name='get_students_monthly_calendar'),
     path('students/attendance-list', get_attendance_list_for_student, name='get_attendance_list_for_student'),
+    path('students/attendance-all-classes', get_student_attendance_all_classes, name='get_student_attendance_all_classes'),
     path('students/assignments', get_assignments_for_student, name='get_assignments_for_student'),
     path('students/exams', get_exams_for_students, name='get_exams_for_students'),
     path('students/class-subject-list', get_class_subject_list_for_students,
