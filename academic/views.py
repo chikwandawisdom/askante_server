@@ -9,6 +9,7 @@ from fundamentals.custom_responses import success_w_data, err_w_msg, success_w_m
 from institutions.methods.academic_year import get_active_academic_year
 from institutions.models.class_subjects import ClassSubject, ClassSubjectReadSerializer
 from institutions.models.timetables import Period, PeriodReadSerializer
+from institutions.models.terms import Terms
 from registry.models.attendance_group import AttendanceGroup
 from students.models.students import Student
 from users.permissions import IsTeacher, IsStudent, IsSuperUser
@@ -90,6 +91,8 @@ def submit_attendance(request):
             lesson=lesson, student_id=data["student"]
         ).first()
 
+        term = Terms.objects.filter(pk=data['term']).first()
+
         if attendance:
             attendance.delete()
 
@@ -99,6 +102,7 @@ def submit_attendance(request):
             student_id=data["student"],
             attendance_group=attendance_group,
             academic_year=active_academic_year,
+            term=term
         )
 
         return success_w_msg(msg="Attendance submitted successfully")
@@ -718,7 +722,6 @@ def submit_term_result(request):
     employee = Employee.objects.get(user=request.user)
     active_academic_year = get_active_academic_year(employee.institution)
     data["academic_year"] = active_academic_year.id
-
     # duplicate check
     term_result = TermResult.objects.filter(
         Q(term=data["term"])
@@ -731,7 +734,6 @@ def submit_term_result(request):
         serializer = TermResultWriteSerializer(term_result, data=data, partial=True)
       
         if serializer.is_valid():
-            print(serializer.is_valid())
             serializer.save()
             return success_w_msg(msg="Term result submitted successfully")
         
