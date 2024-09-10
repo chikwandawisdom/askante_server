@@ -15,7 +15,7 @@ class TermResult(models.Model):
     academic_year = models.ForeignKey(AcademicYear, on_delete=models.CASCADE)
     total_marks = models.PositiveIntegerField()
     grade = models.CharField(max_length=10)
-    notes = models.CharField(max_length=255, null=True, blank=True)
+    notes = models.CharField(max_length=3000, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

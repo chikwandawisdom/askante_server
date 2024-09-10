@@ -719,9 +719,11 @@ def submit_term_result(request):
         serializer = TermResultWriteSerializer(term_result, data=data, partial=True)
       
         if serializer.is_valid():
+            print(serializer.is_valid())
             serializer.save()
             return success_w_msg(msg="Term result submitted successfully")
         
+        # print(serializer.errors)
         return err_w_msg(msg="Term result already submitted for this student")
     
     
