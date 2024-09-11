@@ -22,6 +22,27 @@ def filter_by_grade(grade: int) -> Q:
         return Q()
     return Q(grade=grade)
 
+def filter_by_gender(gender: int) -> Q:
+    """
+    This function is used to filter by grade
+    :param grade:
+    :return:
+    """
+    if gender is None:
+        return Q()
+    return Q(gender=gender)
+
+
+def filter_by_student_type(student_type: int) -> Q:
+    """
+    This function is used to filter by grade
+    :param grade:
+    :return:
+    """
+    if student_type is None:
+        return Q()
+    return Q(student_type=student_type)
+
 
 def filter_parents_by_student_id(student_id: str) -> Q:
     """

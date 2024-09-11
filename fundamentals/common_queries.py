@@ -31,6 +31,12 @@ def search_by_names(first_name: str, last_name: str) -> Q:
     return Q(first_name__icontains=first_name) & Q(last_name__icontains=last_name)
 
 
+def search_student_by_name(search):
+    if search is None:
+        return Q()
+    return Q(first_name__icontains=search) | Q(last_name__icontains=search)
+
+
 def filter_by_institution(institution: int) -> Q:
     """
     This function is used to filter by institution

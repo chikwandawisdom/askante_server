@@ -4,7 +4,7 @@ from rest_framework.status import HTTP_201_CREATED
 from rest_framework.views import APIView
 from nanoid import generate
 
-from fundamentals.common_queries import search_by_names, filter_by_institution
+from fundamentals.common_queries import search_by_names, filter_by_institution, search_student_by_name
 from fundamentals.custom_responses import success_w_data, err_forbidden, err_w_serializer, err_w_msg, \
     get_paginated_response
 from fundamentals.email import send_email
@@ -14,7 +14,8 @@ from .models.parents import Parent, ParentWriteSerializer, ParentReadSerializer
 from .models.student_contacts import StudentContact, StudentContactWriteSerializer, StudentContactReadSerializer
 from .models.student_addresses import StudentAddress, StudentAddressWriteSerializer, StudentAddressReadSerializer
 from .models.student_types import StudentType, StudentTypeSerializer
-from .queries import filter_by_student_id, filter_by_grade, filter_parents_by_student_id
+from .queries import filter_by_student_id, filter_by_grade, filter_parents_by_student_id,filter_by_student_type, \
+    filter_by_gender
 
 
 class StudentList(APIView):
@@ -48,9 +49,9 @@ class StudentList(APIView):
 
         queryset = Student.objects.filter(
             Q(institution__organization=request.user.organization)
-            & Q(search_by_names(params.get('first_name'), params.get('last_name')))
-            & filter_by_student_id(params.get('student_id'))
-            & filter_by_institution(params.get('institution'))
+            & Q(search_student_by_name(params.get('search'),))
+            & filter_by_student_type(params.get('student_type'))
+            & filter_by_gender(params.get('gender'))
             & filter_by_grade(params.get('grade'))
         ).order_by('-id')
 
