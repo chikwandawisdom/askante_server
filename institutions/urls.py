@@ -4,12 +4,13 @@ from .views import create_institution, get_institutions, GradeList, GradeView, S
     ClassDetails, ClassSubjectList, ClassSubjectDetails, add_students_to_class, get_students_in_class, \
     remove_student_from_class, AcademicYearList, AcademicYearDetails, TermsList, TermsDetails, RoomList, RoomDetails, \
     add_period, get_periods_of_a_class, update_period, delete_period, LevelList, LevelDetails, change_academic_year, \
-    get_organizations, create_organization, update_organization, get_invoices, edit_institution
+    get_organizations, create_organization, update_organization, get_invoices, edit_institution, create_organization_admin
 
 urlpatterns = [
 
     path('organizations', get_organizations, name='get_organizations'),
     path('organizations/create', create_organization, name='create_organization'),
+    path('organizations/create-admin', create_organization_admin, name='create_organization'),
     path('organizations/update/<int:pk>', update_organization, name='update_organization'),
 
     path('institutions/create', create_institution, name='create_institution'),

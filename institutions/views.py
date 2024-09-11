@@ -69,6 +69,32 @@ def create_organization(request):
     return success_w_msg(serializer.errors)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsSuperUser])
+def create_organization_admin(request):
+    
+    data = request.data.copy()
+    data = {
+        'first_name': data['first_name'],
+        'last_name': data['last_name'],
+        'username': data['username'],
+        'email': data['email'],
+        'password': data['password'],
+        'organization': data['organization'],
+        'role': 'admin'
+    }
+
+    organization = Organization.objects.filter(pk=data['organization']).first()
+    serializer = UserRegistrationSerializer(data=data)
+    if serializer.is_valid():
+        user = serializer.save()
+        user.organization = organization
+        user.save()
+
+        return success_w_msg('Institution admin created successfully.')
+    return success_w_msg(serializer.errors)
+
+
 def filter_by_name(name):
     if name is None:
         return Q()

@@ -27,7 +27,6 @@ class IsPublisher(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.role == 'publisher'
 
-
 class IsSuperUser(permissions.BasePermission):
     """
     Custom permission to only allow superusers to access the view.
