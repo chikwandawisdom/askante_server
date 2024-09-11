@@ -52,7 +52,7 @@ class StudentList(APIView):
             & Q(search_student_by_name(params.get('search'),))
             & filter_by_student_type(params.get('student_type'))
             & filter_by_gender(params.get('gender'))
-            & filter_by_institution(params.get('institution') or request.user.organization)
+            & filter_by_institution(params.get('institution'))
             & filter_by_grade(params.get('grade'))
         ).order_by('-id')
 
