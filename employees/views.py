@@ -3,6 +3,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.status import HTTP_201_CREATED
 from nanoid import generate
+from django.db.models import Q
 
 from fundamentals.custom_responses import success_w_data, err_w_serializer, err_w_msg, success_w_msg, \
     get_paginated_response
@@ -13,6 +14,8 @@ from .models.employment_positions import EmploymentPosition, EmploymentPositionW
 from .models.employment_types import EmploymentType, EmploymentTypeWriteSerializer, EmploymentTypeReadSerializer
 from .models.employee_addresses import EmployeeAddress, EmployeeAddressWriteSerializer, EmployeeAddressReadSerializer
 from .models.employee_contacts import EmployeeContact, EmployeeContactWriteSerializer, EmployeeContactReadSerializer
+
+from .queries import filter_by_gender, search_by_employee_name
 
 
 class EmploymentPositionList(APIView):
@@ -140,10 +143,24 @@ class EmploymentTypeDetail(APIView):
 class EmployeeList(APIView):
     permission_classes = [IsAuthenticated]
 
+    # @staticmethod
+    # def get(request):
+    #     # todo: add filter here
+    #     queryset = Employee.objects.filter(institution__organization=request.user.organization.id).order_by('-id')
+    #     return get_paginated_response(request, queryset, EmployeeReadSerializer)
+    
+
     @staticmethod
     def get(request):
-        # todo: add filter here
-        queryset = Employee.objects.filter(institution__organization=request.user.organization.id).order_by('-id')
+        params = request.query_params
+
+        queryset = Employee.objects.filter(
+            Q(institution__organization=request.user.organization)
+            & Q(search_by_employee_name(params.get('search'),))
+            & filter_by_gender(params.get('gender'))
+
+        ).order_by('-id')
+
         return get_paginated_response(request, queryset, EmployeeReadSerializer)
 
     @staticmethod
