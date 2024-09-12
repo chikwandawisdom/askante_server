@@ -142,14 +142,7 @@ class EmploymentTypeDetail(APIView):
 
 class EmployeeList(APIView):
     permission_classes = [IsAuthenticated]
-
-    # @staticmethod
-    # def get(request):
-    #     # todo: add filter here
-    #     queryset = Employee.objects.filter(institution__organization=request.user.organization.id).order_by('-id')
-    #     return get_paginated_response(request, queryset, EmployeeReadSerializer)
     
-
     @staticmethod
     def get(request):
         params = request.query_params
