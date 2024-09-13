@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from institutions.models.organization import Organization
 from users.models import User
+from users.serializers import UserSerializer
 
 
 class Announcement(models.Model):
@@ -25,7 +26,9 @@ class AnnouncementWriteSerializer(serializers.ModelSerializer):
 
 
 class AnnouncementReadSerializer(serializers.ModelSerializer):
+    posted_by = UserSerializer()
     class Meta:
         model = Announcement
-        fields = '__all__'
+        # fields = '__all__'
+        fields = ("title", "body", "organization", "expiry_date", "posted_by", "created_at", )
 

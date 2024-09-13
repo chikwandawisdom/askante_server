@@ -1,6 +1,7 @@
 from rest_framework.decorators import APIView
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime, timedelta
+from django.db.models import Q
 
 from fundamentals.common_queries import search_by_name
 from .models.attendance_group import AttendanceGroup, AttendanceGroupWriteSerializer, AttendanceGroupReadSerializer
@@ -102,7 +103,8 @@ class AnnouncementListView(APIView):
     @staticmethod
     def get(request):
         announcements = Announcement.objects.filter(
-            search_by_name(request.query_params.get('search'))
+            Q(organization=request.user.organization)
+            & search_by_name(request.query_params.get('search'))
         ).order_by('created_at')
         serializer = AnnouncementReadSerializer(announcements, many=True)
         return success_w_data(serializer.data)
