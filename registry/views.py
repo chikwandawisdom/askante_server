@@ -116,7 +116,6 @@ class AnnouncementListView(APIView):
             # print((announcemet.posted_by.employee_set.values_list('dp').last()))
             # print((announcemet.posted_by.employee_set.values('dp')))
             k = announcemet.posted_by.employee_set.values_list('dp').last()
-            
             if k is not None:
                 announcemet.posted_by.dp = k[0]
 

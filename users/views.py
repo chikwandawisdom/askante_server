@@ -38,7 +38,7 @@ def login(request):
 
     if user.is_active is False:
         return err_w_msg('User account not activated. Contact your administrator')
-
+    
     # updating user last login
     update_last_login(None, user)
     user_data = UserSerializer(user, many=False).data
@@ -63,6 +63,16 @@ def authenticate(request):
     if user.role == 'student' or user.role == 'employee':
         if user.organization.is_active is False:
             return err_w_msg('Institution account not activated. Contact your administrator')
+    
+    # Attach picture to employee
+    employee = user.employee_set.values_list('dp').last()
+    if employee is not None:
+        user.dp = employee[0]
+
+    # Attach picture to student
+    student = user.student_user.values_list('dp').last()
+    if student is not None:
+        user.dp = student[0]
 
     user_data = UserSerializer(user).data
 
