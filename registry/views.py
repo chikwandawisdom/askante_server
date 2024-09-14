@@ -110,7 +110,7 @@ class AnnouncementListView(APIView):
             & search_by_title(request.query_params.get('search'))
         ).order_by('-created_at')
 
-        # Update Employee dp using User dp
+        # Update Employee dp using User dp (profile picture)
         for announcemet in queryset:
             # print((announcemet.posted_by.employee_set.all()))
             # print((announcemet.posted_by.employee_set.values_list('dp').last()))
