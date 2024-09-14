@@ -30,5 +30,5 @@ class AnnouncementReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Announcement
         # fields = '__all__'
-        fields = ("title", "body", "organization", "expiry_date", "posted_by", "created_at", )
+        fields = ("title", "body", "organization", "expiry_date", "posted_by", "created_at", "id")
 

@@ -2,11 +2,13 @@ from rest_framework.decorators import APIView
 from rest_framework.permissions import IsAuthenticated
 from datetime import datetime, timedelta
 from django.db.models import Q
+from fundamentals.custom_responses import success_w_msg, success_w_data, err_w_serializer, err_w_msg, \
+    get_paginated_response
 
-from fundamentals.common_queries import search_by_name
+from fundamentals.common_queries import search_by_name, search_by_title
 from .models.attendance_group import AttendanceGroup, AttendanceGroupWriteSerializer, AttendanceGroupReadSerializer
 from .models.announcements import Announcement, AnnouncementReadSerializer, AnnouncementWriteSerializer
-from fundamentals.custom_responses import success_w_msg, success_w_data, err_w_serializer, err_w_msg
+from employees.models.employees import Employee
 
 
 class AttendanceGroupListView(APIView):
@@ -102,12 +104,15 @@ class AnnouncementListView(APIView):
 
     @staticmethod
     def get(request):
-        announcements = Announcement.objects.filter(
+        
+        queryset = Announcement.objects.filter(
             Q(organization=request.user.organization)
-            & search_by_name(request.query_params.get('search'))
-        ).order_by('created_at')
-        serializer = AnnouncementReadSerializer(announcements, many=True)
-        return success_w_data(serializer.data)
+            & search_by_title(request.query_params.get('search'))
+        ).order_by('-created_at')
+
+        # serializer = AnnouncementReadSerializer(announcements, many=True)
+        # return success_w_data(serializer.data)
+        return get_paginated_response(request, queryset, AnnouncementReadSerializer)
 
     @staticmethod
     def post(request):

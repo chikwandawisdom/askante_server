@@ -12,6 +12,17 @@ def search_by_name(name: str) -> Q:
     return Q(name__icontains=name)
 
 
+def search_by_title(title: str) -> Q:
+    """
+    This function is used to search by name
+    :param name:
+    :return:
+    """
+    if title is None:
+        return Q()
+    return Q(title__icontains=title)
+
+
 def search_by_names(first_name: str, last_name: str) -> Q:
     """
     This function is used to search by first name and last name
