@@ -110,8 +110,16 @@ class AnnouncementListView(APIView):
             & search_by_title(request.query_params.get('search'))
         ).order_by('-created_at')
 
-        # serializer = AnnouncementReadSerializer(announcements, many=True)
-        # return success_w_data(serializer.data)
+        # Update Employee dp using User dp
+        for announcemet in queryset:
+            # print((announcemet.posted_by.employee_set.all()))
+            # print((announcemet.posted_by.employee_set.values_list('dp').last()))
+            # print((announcemet.posted_by.employee_set.values('dp')))
+            k = announcemet.posted_by.employee_set.values_list('dp').last()
+            
+            if k is not None:
+                announcemet.posted_by.dp = k[0]
+
         return get_paginated_response(request, queryset, AnnouncementReadSerializer)
 
     @staticmethod
