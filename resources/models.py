@@ -6,13 +6,14 @@ from institutions.models.levels import Level
 from institutions.models.subjects import Subject
 from users.models import User
 from users.serializers import UserSerializer
+from institutions.models.organization import Organization, OrganizationReadSerializer
+
 
 class Resource(models.Model):
 
     type_choices = (
         ('past_exam', 'past-exam'),
         ('notes', 'notes'),
-        ('syllabus', 'syllabus'),
         ('article', 'article'),
         ('other', 'other'),
     )
@@ -31,6 +32,7 @@ class Resource(models.Model):
     type = models.CharField(max_length=10, choices=type_choices)
     syllabus = models.CharField(max_length=10, choices=syllabus_choices)
     posted_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -44,12 +46,12 @@ class ResourceWriteSerializer(serializers.ModelSerializer):
 
 class ResourceReadSerializer(serializers.ModelSerializer):
     posted_by = UserSerializer()
+    organization = OrganizationReadSerializer()
     class Meta:
         model = Resource
-        exclude = ['resource_url',]
         fields = (
             "name", 
-            "desription", 
+            "description", 
             "grade", 
             "subject", 
             "posted_by", 
@@ -57,5 +59,7 @@ class ResourceReadSerializer(serializers.ModelSerializer):
             "level", 
             "type",
             "syllabus",
+            "resource_url",
+            "organization",
             "created_at", 
         )
