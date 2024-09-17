@@ -46,14 +46,14 @@ class ActivityDetail(APIView):
 
     @staticmethod
     def patch(request, pk):
-        Activity = Activity.objects.filter(pk=pk).first()
+        activity = Activity.objects.filter(pk=pk).first()
 
-        if not Activity:
+        if not activity:
             return success_w_msg('Activity not found.', status=HTTP_404_NOT_FOUND)
 
         data = request.data.copy()
 
-        serializer = ActivityWriteSerializer(Activity, data=data, partial=True)
+        serializer = ActivityWriteSerializer(activity, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return success_w_data(serializer.data)
