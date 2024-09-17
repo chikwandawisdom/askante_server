@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'reports',
     'book_shop',
     'resources',
+    'events',
 ]
 
 MIDDLEWARE = [
