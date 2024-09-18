@@ -15,6 +15,7 @@ from .models.age_group import AgeGroupReadSerializer, AgeGroupWriteSerializer, A
 from employees.models.employees import Employee
 from students.models.students import Student, StudentReadSerializer
 from .models.age_group_activity import AgeGroupActivity, AgeGroupActivityReadSerializer, AgeGroupActivityWriteSerializer
+from events.models.activity_timetables import ActivityPeriod, ActivityPeriodReadSerializer, ActivityPeriodWriteSerializer
 
 
 class ActivityList(APIView):
@@ -231,7 +232,7 @@ class AgeGroupActivityList(APIView):
         params = request.query_params
 
         if params.get('age_group') is None:
-            return success_w_msg('_class is required.')
+            return success_w_msg('age_group is required.')
 
         age_group_activities = AgeGroupActivity.objects.filter(
             Q(institution__organization=request.user.organization)
@@ -258,23 +259,23 @@ class AgeGroupActivityDetails(APIView):
 
     @staticmethod
     def get(request, pk):
-        class_subject = AgeGroupActivity.objects.filter(pk=pk, institution__organization=request.user.organization).first()
+        age_group_activity = AgeGroupActivity.objects.filter(pk=pk, institution__organization=request.user.organization).first()
 
-        if not class_subject:
+        if not age_group_activity:
             return success_w_msg('Age Group Activity not found.', status=HTTP_404_NOT_FOUND)
 
-        serializer = AgeGroupActivityReadSerializer(class_subject)
+        serializer = AgeGroupActivityReadSerializer(age_group_activity)
         return success_w_data(serializer.data)
 
     @staticmethod
     def patch(request, pk):
-        class_subject = AgeGroupActivity.objects.filter(pk=pk, institution__organization=request.user.organization).first()
+        age_group_activity = AgeGroupActivity.objects.filter(pk=pk, institution__organization=request.user.organization).first()
 
-        if not class_subject:
+        if not age_group_activity:
             return success_w_msg('Age Group Activity not found.', status=HTTP_404_NOT_FOUND)
 
         data = request.data.copy()
-        data['institution'] = class_subject.institution.id
+        data['institution'] = age_group_activity.institution.id
 
         if data.get('teacher'):
             teacher = Employee.objects.filter(pk=data.get('teacher')).first()
@@ -287,7 +288,7 @@ class AgeGroupActivityDetails(APIView):
             except AttributeError:
                 return err_w_msg('Employee is not a teacher.', status=HTTP_400_BAD_REQUEST)
 
-        serializer = AgeGroupActivityWriteSerializer(class_subject, data=data, partial=True)
+        serializer = AgeGroupActivityWriteSerializer(age_group_activity, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return success_w_data(serializer.data)
@@ -295,11 +296,76 @@ class AgeGroupActivityDetails(APIView):
 
     @staticmethod
     def delete(request, pk):
-        class_subject = AgeGroupActivity.objects.filter(pk=pk, institution__organization=request.user.organization).first()
+        age_group_activity = AgeGroupActivity.objects.filter(pk=pk, institution__organization=request.user.organization).first()
 
-        if not class_subject:
+        if not age_group_activity:
             return success_w_msg('Age Group Activity not found.', status=HTTP_404_NOT_FOUND)
 
-        class_subject.delete()
+        age_group_activity.delete()
         return success_w_msg('Age Group Activity deleted successfully.')
+    
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_activity_period(request):
+    data = request.data.copy()
+
+    age_group_activity = AgeGroupActivity.objects.filter(pk=data['age_group_activity'],
+                                                institution__organization=request.user.organization).first()
+    if not age_group_activity:
+        return success_w_msg('Age Group Activity not found.', status=HTTP_404_NOT_FOUND)
+
+    serializer = ActivityPeriodWriteSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return success_w_data(serializer.data, status=201)
+    return err_w_serializer(serializer.errors)
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_activity_period(request, pk):
+    period = ActivityPeriod.objects.filter(pk=pk).first()
+
+    if not period:
+        return success_w_msg('Activity Period not found.', status=HTTP_404_NOT_FOUND)
+
+    data = request.data.copy()
+
+    serializer = ActivityPeriodWriteSerializer(period, data=data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return success_w_data(serializer.data)
+    return err_w_serializer(serializer.errors)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_activity_periods_of_a_class(request):
+    age_group = request.query_params.get('age_group')
+    if age_group is None:
+        return success_w_msg('age_group is required.')
+
+    age_group = AgeGroup.objects.filter(id=age_group, institution__organization=request.user.organization).first()
+
+    if age_group is None:
+        return success_w_msg('Class not found.', status=HTTP_404_NOT_FOUND)
+
+    periods = ActivityPeriod.objects.select_related('age_group_activity').filter(age_group_activity__age_group=age_group)
+    periods = ActivityPeriodReadSerializer(periods, many=True)
+
+    return success_w_data(periods.data)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_activity_period(request, pk):
+    period = ActivityPeriod.objects.filter(pk=pk, age_group_activity__institution__organization=request.user.organization).first()
+
+    if not period:
+        return success_w_msg('Period not found.', status=HTTP_404_NOT_FOUND)
+
+    period.delete()
+    return success_w_msg('Period deleted successfully.')
+
 
