@@ -178,7 +178,7 @@ def get_students_in_age_group(request):
     age_group = AgeGroup.objects.filter(pk=age_group_id, institution__organization=request.user.organization).first()
 
     if not age_group:
-        return success_w_msg('Class not found.', status=HTTP_404_NOT_FOUND)
+        return success_w_msg('Age Group not found.', status=HTTP_404_NOT_FOUND)
 
     students = age_group.students.all()
     serializer = StudentReadSerializer(students, many=True)

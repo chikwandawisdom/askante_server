@@ -46,7 +46,6 @@ class StudentList(APIView):
     @staticmethod
     def get(request):
         params = request.query_params
-
         queryset = Student.objects.filter(
             Q(institution__organization=request.user.organization)
             & Q(search_student_by_name(params.get('search'),))

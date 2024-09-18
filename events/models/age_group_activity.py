@@ -26,8 +26,8 @@ class AgeGroupActivityWriteSerializer(serializers.ModelSerializer):
 
 
 class AgeGroupActivityReadSerializer(serializers.ModelSerializer):
-    _class = AgeGroupReadSerializer(read_only=True, many=False)
-    subject = ActivityReadSerializer(read_only=True, many=False)
+    age_group = AgeGroupReadSerializer(read_only=True, many=False)
+    activity = ActivityReadSerializer(read_only=True, many=False)
     teacher = EmployeeReadSerializer(read_only=True, many=False)
 
     class Meta:
