@@ -34,7 +34,7 @@ class AgeGroupWriteSerializer(serializers.ModelSerializer):
 
 
 class AgeGroupReadSerializer(serializers.ModelSerializer):
-    grade = GradeReadSerializer(read_only=True)
+    # grade = GradeReadSerializer(read_only=True)
     class_teacher = EmployeeReadSerializer(read_only=True, many=False)
 
     class Meta:

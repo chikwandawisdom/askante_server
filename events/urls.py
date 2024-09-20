@@ -3,7 +3,8 @@ from rest_framework.urls import path
 from .views import ActivityList, ActivityDetail, AgeGroupList, AgeGroupDetails
 from .views import (add_students_to_age_group, get_students_in_age_group, remove_student_from_age_group, add_activity_period,
                     update_activity_period, get_activity_periods_of_a_class, delete_activity_period,
-                    AgeGroupActivityList, AgeGroupActivityDetails, get_monthly_events_calendar, EventDetail, EventList)
+                    AgeGroupActivityList, AgeGroupActivityDetails, get_monthly_events_calendar, EventDetail, EventList,
+                    get_teachers_age_group_list, get_teachers_activity_periods)
 
 
 urlpatterns = [
@@ -26,5 +27,7 @@ urlpatterns = [
     path('events', EventList.as_view(), name='event_list'),
     path('events/<int:pk>', EventDetail.as_view(), name='event_detail'),
     path('events/monthly-calendar', get_monthly_events_calendar, name='get_monthly_events_calendar'),
+    path('teachers/age-group-list', get_teachers_age_group_list, name='get_teachers_age_group_list'),
+    path('teachers/activity-periods', get_teachers_activity_periods, name='get_teachers_activity_periods'),
 ]
 				

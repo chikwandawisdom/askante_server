@@ -19,6 +19,7 @@ from .models.age_group_activity import AgeGroupActivity, AgeGroupActivityReadSer
 from events.models.activity_timetables import ActivityPeriod, ActivityPeriodReadSerializer, ActivityPeriodWriteSerializer
 from institutions.methods.academic_year import get_active_academic_year
 from .models.event import Event, EventReadSerializer, EventWriteSerializer
+from users.permissions import IsTeacher
 
 
 class ActivityList(APIView):
@@ -379,8 +380,8 @@ def delete_activity_period(request, pk):
 def get_monthly_events_calendar(request):
     params = request.query_params
 
-    employee = Employee.objects.get(user=request.user)
-    active_academic_year = get_active_academic_year(employee.institution)
+    # employee = Employee.objects.get(user=request.user)
+    # active_academic_year = get_active_academic_year(employee.institution)
 
     current_month_start_date = datetime.strptime(
         params.get("date"), "%Y-%m-%d"
@@ -422,45 +423,26 @@ def get_monthly_events_calendar(request):
                 }
             )
 
-        # assignments
-        # assignments = Assignment.objects.filter(
-        #     Q(class_subject__teacher__user=request.user)
-        #     & Q(due_date__date=current_date)
-        #     & filter_by_academic_year(active_academic_year)
-        # ).order_by("due_date")
+        # events
+        events_list = Event.objects.filter(
+            # Q(class_subject__teacher__user=request.user)
+            Q(organization=request.user.organization)
+            & Q(
+                date__day=current_date.day,
+                date__month=current_date.month,
+                date__year=current_date.year,
+            )
+        ).order_by("date")
 
-        # for assignment in assignments:
-        #     last_time = assignment.due_date.time()
-        #     first_time = (datetime.combine(datetime.min, last_time) - timedelta(minutes=60)).time()
-        #     events.append(
-        #         {
-        #             "type": "assignment",
-        #             "id": assignment.id,
-        #             "title": f"{assignment.title} - ({first_time} - {last_time})",
-        #             "subject": assignment.class_subject.subject.name,
-        #         }
-        #     )
-
-        # exams
-        # exams = Exam.objects.filter(
-        #     Q(class_subject__teacher__user=request.user)
-        #     & Q(
-        #         date__day=current_date.day,
-        #         date__month=current_date.month,
-        #         date__year=current_date.year,
-        #     )
-        #     & filter_by_academic_year(active_academic_year)
-        # ).order_by("date")
-
-        # for exam in exams:
-        #     events.append(
-        #         {
-        #             "type": "exam",
-        #             "id": exam.id,
-        #             "title": f'{exam.title} - ({exam.start} - {exam.end})',
-        #             "subject": exam.class_subject.subject.name,
-        #         }
-        #     )
+        for event in events_list:
+            events.append(
+                {
+                    "type": event.type,
+                    "id": event.id,
+                    "title": f'{event.title} - ({event.start} - {event.end})',
+                    "activity": ''
+                }
+            )
 
         day["events"] = events
         monthly_calendar.append(day)
@@ -546,4 +528,41 @@ def filter_by_academic_year(academic_year):
     """
     if academic_year is not None:
         return Q(academic_year=academic_year)
+    return Q()
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsTeacher])
+def get_teachers_age_group_list(request):
+    employee = Employee.objects.get(user=request.user)
+
+    age_group_activities = AgeGroupActivity.objects.filter(teacher=employee).order_by("-id")
+    age_group_activities = AgeGroupActivityReadSerializer(age_group_activities, many=True).data
+
+    return success_w_data(data=age_group_activities, msg="Class list fetched successfully")
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsTeacher])
+def get_teachers_activity_periods(request):
+    params = request.query_params
+
+    periods = ActivityPeriod.objects.filter(
+        Q(class_subject__teacher__user=request.user)
+        & filter_by_age_group_activity(params.get("age_group_activity"))
+        & filter_by_period_day(params.get("day"))
+    ).order_by("day", "period")
+    periods = ActivityPeriodReadSerializer(periods, many=True).data
+
+    return success_w_data(data=periods, msg="Periods fetched successfully")
+
+
+def filter_by_age_group_activity(age_group_activity):
+    """
+    Filter periods by class subject
+    :param age_group_activity: pk
+    :return: Q()
+    """
+    if age_group_activity is not None:
+        return Q(age_group_activity=age_group_activity)
     return Q()
