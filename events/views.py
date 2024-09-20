@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST
 from rest_framework.permissions import IsAuthenticated
+from datetime import datetime, timedelta
 
 from fundamentals.custom_responses import success_w_msg, success_w_data, err_w_serializer, get_paginated_response, \
     err_w_msg
@@ -16,6 +17,8 @@ from employees.models.employees import Employee
 from students.models.students import Student, StudentReadSerializer
 from .models.age_group_activity import AgeGroupActivity, AgeGroupActivityReadSerializer, AgeGroupActivityWriteSerializer
 from events.models.activity_timetables import ActivityPeriod, ActivityPeriodReadSerializer, ActivityPeriodWriteSerializer
+from institutions.methods.academic_year import get_active_academic_year
+from .models.event import Event, EventReadSerializer, EventWriteSerializer
 
 
 class ActivityList(APIView):
@@ -312,6 +315,7 @@ def add_activity_period(request):
 
     age_group_activity = AgeGroupActivity.objects.filter(pk=data['age_group_activity'],
                                                 institution__organization=request.user.organization).first()
+    data['institution'] = age_group_activity.institution.id
     if not age_group_activity:
         return success_w_msg('Age Group Activity not found.', status=HTTP_404_NOT_FOUND)
 
@@ -369,3 +373,177 @@ def delete_activity_period(request, pk):
     return success_w_msg('Period deleted successfully.')
 
 
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_monthly_events_calendar(request):
+    params = request.query_params
+
+    employee = Employee.objects.get(user=request.user)
+    active_academic_year = get_active_academic_year(employee.institution)
+
+    current_month_start_date = datetime.strptime(
+        params.get("date"), "%Y-%m-%d"
+    ).replace(day=1)
+    current_month_end_date = current_month_start_date.replace(
+        day=1, month=current_month_start_date.month + 1
+    ) - timedelta(days=1)
+
+    # loop through the days of the month
+    monthly_calendar = []
+    current_date = current_month_start_date
+    while current_date <= current_month_end_date:
+        day = {
+            "date": current_date.strftime("%Y-%m-%d"),
+            "day": current_date.strftime("%A"),
+        }
+
+        events = []
+
+        # periods
+        periods = (
+            ActivityPeriod.objects.select_related(
+                "age_group_activity__age_group", "age_group_activity__activity", 
+            )
+            .filter(
+                # Q(class_subject__teacher__user=request.user)& 
+                Q(institution__organization=request.user.organization) &
+                filter_by_period_day(current_date.strftime("%A"))
+            )
+            .order_by("period")
+        )
+        for period in periods:
+            events.append(
+                {
+                    "type": "activity",
+                    "id": period.id,
+                    "title": f"{period.age_group_activity.age_group.name} - ({period.start} - {period.end})",
+                    "subject": period.age_group_activity.activity.name,
+                }
+            )
+
+        # assignments
+        # assignments = Assignment.objects.filter(
+        #     Q(class_subject__teacher__user=request.user)
+        #     & Q(due_date__date=current_date)
+        #     & filter_by_academic_year(active_academic_year)
+        # ).order_by("due_date")
+
+        # for assignment in assignments:
+        #     last_time = assignment.due_date.time()
+        #     first_time = (datetime.combine(datetime.min, last_time) - timedelta(minutes=60)).time()
+        #     events.append(
+        #         {
+        #             "type": "assignment",
+        #             "id": assignment.id,
+        #             "title": f"{assignment.title} - ({first_time} - {last_time})",
+        #             "subject": assignment.class_subject.subject.name,
+        #         }
+        #     )
+
+        # exams
+        # exams = Exam.objects.filter(
+        #     Q(class_subject__teacher__user=request.user)
+        #     & Q(
+        #         date__day=current_date.day,
+        #         date__month=current_date.month,
+        #         date__year=current_date.year,
+        #     )
+        #     & filter_by_academic_year(active_academic_year)
+        # ).order_by("date")
+
+        # for exam in exams:
+        #     events.append(
+        #         {
+        #             "type": "exam",
+        #             "id": exam.id,
+        #             "title": f'{exam.title} - ({exam.start} - {exam.end})',
+        #             "subject": exam.class_subject.subject.name,
+        #         }
+        #     )
+
+        day["events"] = events
+        monthly_calendar.append(day)
+
+        current_date += timedelta(days=1)
+
+    return success_w_data(
+        data=monthly_calendar, msg="Monthly calendar fetched successfully"
+    )
+
+
+def filter_by_period_day(day):
+    """
+    Filter periods by day
+    :param day: day
+    :return: Q()
+    """
+    if day is not None:
+        return Q(day=day)
+    return Q()
+
+
+class EventList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @staticmethod
+    def post(request):
+        data = request.data.copy()
+        data['organization'] = request.user.organization.id
+
+        serializer = EventWriteSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return success_w_msg(msg="Event added successfully")
+        return err_w_msg(msg=serializer.errors)
+
+    @staticmethod
+    def get(request):
+        params = request.query_params
+        # active_academic_year = get_active_academic_year(employee.institution)
+
+        events = Event.objects.filter(
+            Q(organization=request.user.organization) 
+            # & filter_by_academic_year(active_academic_year)
+        ).order_by("-id")
+
+        events = EventReadSerializer(events, many=True).data
+
+        return success_w_data(data=events, msg="Events fetched successfully")
+
+
+class EventDetail(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @staticmethod
+    def get(request, pk):
+        event = Event.objects.get(id=pk)
+        event = EventReadSerializer(event).data
+        return success_w_data(data=event, msg="Event fetched successfully")
+
+    @staticmethod
+    def patch(request, pk):
+        event = Event.objects.get(id=pk)
+        serializer = EventWriteSerializer(instance=event, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return success_w_msg(msg="Event updated successfully")
+        return err_w_msg(msg=serializer.errors)
+
+    @staticmethod
+    def delete(request, pk):
+        event = Event.objects.get(id=pk)
+        event.delete()
+        return success_w_msg(msg="Event deleted successfully")
+    
+
+
+def filter_by_academic_year(academic_year):
+    """
+    Filter periods by academic year
+    :param academic_year: pk
+    :return: Q()
+    """
+    if academic_year is not None:
+        return Q(academic_year=academic_year)
+    return Q()

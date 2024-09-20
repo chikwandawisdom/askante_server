@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from institutions.models.class_subjects import ClassSubject, ClassSubjectReadSerializer
 from events.models.age_group_activity import AgeGroupActivity, AgeGroupActivityReadSerializer
+from institutions.models.institution import Institution
 
 
 class ActivityPeriod(models.Model):
@@ -17,6 +18,7 @@ class ActivityPeriod(models.Model):
     )
 
     age_group_activity = models.ForeignKey(AgeGroupActivity, on_delete=models.CASCADE)
+    institution = models.ForeignKey(Institution, on_delete=models.CASCADE, null=True, blank=True,)
     day = models.CharField(max_length=10, choices=day_choices)
     period = models.PositiveIntegerField()
     start = models.TimeField()
